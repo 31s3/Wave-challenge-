@@ -1,0 +1,136 @@
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baqer Game - Ultimate Match Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="dark-mode" onclick="initAudio(); closeSidebarOutside(event)"> 
+
+    <div class="phone-container premium-bg">
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+
+        <header class="top-bar glass-panel">
+            <div class="menu-icon" id="menuIconBtn" onclick="toggleMenu(event)">
+                <div class="hamburger"></div>
+                <div class="hamburger"></div>
+                <div class="hamburger"></div>
+            </div>
+            <div class="stats">
+                <div class="stat-badge gold-glow">
+                    <span class="icon">🪙</span> <span id="coinsDisplay">5000</span>
+                </div>
+                <div class="stat-badge purple-glow">
+                    <span class="icon">🏆</span> <span id="pointsDisplay">12450</span>
+                </div>
+            </div>
+        </header>
+
+        <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebarOutside(event)"></div>
+
+        <nav id="sideMenu" class="side-menu glass-panel" onclick="event.stopPropagation()">
+            <div class="profile-header">
+                <div class="avatar-ring"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Baqer" class="avatar"></div>
+                <div class="user-data">
+                    <h3 id="sideUsername">Baqer Hamed</h3>
+                    <span class="id-tag">ID: <b id="sideID">885421</b></span>
+                </div>
+            </div>
+            <hr class="divider">
+            <ul class="menu-list">
+                <li onclick="openModal('account')"><span class="m-icon">👤</span> معلومات الحساب</li>
+                <li onclick="openModal('achievements')"><span class="m-icon">🏅</span> إنجازات اللعبة</li>
+                <li onclick="openModal('store')"><span class="m-icon">🛒</span> المتجر الملكي</li>
+                <li onclick="openModal('settings')"><span class="m-icon">🎮</span> الإعدادات</li>
+                <li onclick="openModal('help')"><span class="m-icon">❓</span> الإرشادات</li>
+                <li onclick="openModal('developer')"><span class="m-icon">👨‍💻</span> حساب المطور</li>
+                <li onclick="openModal('admin')"><span class="m-icon">🛠️</span> لوحة التحكم</li>
+            </ul>
+        </nav>
+
+        <main id="mainScreen" class="game-main">
+            <div class="hero-box glass-panel floating">
+                <div class="logo-container">
+                    <h1 class="premium-title">تحدي الذكاء</h1>
+                    <p class="subtitle">نظام المباريات الكبرى</p>
+                </div>
+                <div class="actions">
+                    <button class="premium-btn primary-btn pulse-anim" onclick="startMatch('online')">
+                        لعب أونلاين 🌐<div class="btn-shine"></div>
+                    </button>
+                    
+                    <button class="premium-btn friend-btn" onclick="openOnlineRoomModal()">
+                        لعب مع صديق 👥
+                    </button>
+
+                    <button class="premium-btn secondary-btn" onclick="startMatch('ai')">
+                        الذكاء الاصطناعي 🤖
+                    </button>
+                    
+                    <div class="row-btns mt-4">
+                        <button class="icon-btn tooltip" onclick="openModal('settings')">⚙️</button>
+                        <button class="icon-btn tooltip" onclick="openModal('titles')">🎖️</button>
+                        <button class="icon-btn tooltip" onclick="openModal('store')">🛒</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <section id="gameMatchScreen" class="play-screen" style="display:none;">
+            <div id="matchPlayersBar" class="online-players-bar glass-panel" style="display:none; margin-bottom: 10px;"></div>
+            
+            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
+                <span id="stageIndicator" class="stage-badge">المرحلة A</span>
+                <span id="matchScoreDisplay" class="score-badge">نقاط المباراة: 0</span>
+            </div>
+
+            <div class="timer-bar"><div id="matchProgress" class="progress"></div></div>
+            
+            <div id="waitingScreen" style="display:none; text-align:center; margin:auto;">
+                <h2 class="glow-text" id="waitingText">جاري البحث عن منافس... ⏳</h2>
+                <div class="pulse-anim" style="width:60px; height:60px; border-radius:50%; background:var(--primary); margin:30px auto;"></div>
+            </div>
+
+            <div id="quizBox" class="quiz-box glass-panel" style="display:flex; flex-direction:column; gap:15px; max-height: 400px; overflow-y:auto;">
+                
+                <div id="qImageContainer" style="display:none; text-align:center;">
+                    <img id="qImage" src="" style="width:100%; max-height:150px; border-radius:15px; object-fit:cover;">
+                </div>
+                
+                <div id="qTextContainer" style="display:none; background:rgba(0,0,0,0.3); padding:10px; border-radius:10px; font-size:0.85rem; text-align:justify; line-height:1.8;">
+                    <p id="113355779924680"></p>
+                </div>
+
+                <h2 id="matchQuestionText" style="font-size:1.2rem; margin:0;">تحميل السؤال...</h2>
+                <hr class="quiz-divider" style="margin:5px 0;">
+                
+                <div id="matchOptionsContainer" class="options-grid"></div>
+                
+                <div id="matchInputContainer" style="display:none; width:100%;">
+                    <input type="text" id="manualInputAnswer" class="input-field" placeholder="اكتب إجابتك هنا..." style="margin-bottom:10px;">
+                    <button class="premium-btn primary-btn" onclick="submitManualAnswer()" style="padding:10px; font-size:1rem;">إرسال الإجابة ✅</button>
+                </div>
+            </div>
+            
+            <button class="premium-btn exit-btn" onclick="exitToMain()" style="margin-top:auto;">انسحاب 🏳️</button>
+        </section>
+
+
+        <div id="modalOverlay" class="modal-overlay">
+            <div class="modal-card glass-panel">
+                <div class="modal-header">
+                    <h2 id="modalTitle" class="glow-text">العنوان</h2>
+                    <button class="close-btn" onclick="closeModal()">×</button>
+                </div>
+                <div id="modalBody" class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
